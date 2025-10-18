@@ -1,0 +1,153 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Foodlink Design System - Efficiency, Trust, Clarity */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 20%;
+
+    /* Trust Blue - Deeper, modern primary */
+    --primary: 210 100% 28%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Success Green - Food & confirmations */
+    --secondary: 122 39% 49%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Subtle grey for card backgrounds */
+    --muted: 210 40% 98%;
+    --muted-foreground: 0 0% 45%;
+
+    /* Burnt Orange - Softer, sophisticated accent */
+    --accent: 24 96% 54%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Error/Alert Red */
+    --destructive: 0 63% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 150 10% 90%;
+    --input: 150 10% 90%;
+    --ring: 210 100% 28%;
+
+    --radius: 0.75rem;
+    
+    /* Custom Foodlink tokens */
+    --urgent: 24 96% 54%;
+    --urgent-foreground: 0 0% 100%;
+    
+    --success: 122 39% 49%;
+    --success-foreground: 0 0% 100%;
+    
+    --trust: 210 100% 28%;
+    --trust-foreground: 0 0% 100%;
+    
+    /* Refined shadows - softer and more subtle */
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 0 0% 10%;
+    --foreground: 0 0% 95%;
+
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 210 100% 38%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 122 39% 45%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 24 96% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 210 100% 38%;
+    
+    --urgent: 24 96% 60%;
+    --success: 122 39% 45%;
+    --trust: 210 100% 38%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 600;
+  }
+}
+
+@layer utilities {
+  /* Shadow utilities */
+  .shadow-card {
+    box-shadow: var(--shadow-md);
+  }
+  
+  .shadow-card-lg {
+    box-shadow: var(--shadow-lg);
+  }
+  
+  /* Smooth transitions for interactive elements */
+  .transition-smooth {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Hover scale effect */
+  .hover-scale {
+    transition: transform 0.2s ease;
+  }
+  
+  .hover-scale:hover {
+    transform: translateY(-2px);
+  }
+}
