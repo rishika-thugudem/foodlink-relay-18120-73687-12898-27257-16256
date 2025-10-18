@@ -262,10 +262,10 @@ const NGODashboard = () => {
                   {donation.status === "requested" && donation.requested_by === userId ? (
                     <Button
                       className="w-full"
-                      variant="outline"
+                      variant="default"
                       disabled
                     >
-                      Awaiting Volunteer
+                      Requested
                     </Button>
                   ) : donation.status === "requested" ? (
                     <Button
