@@ -14,6 +14,8 @@ import { ChatDialog } from "@/components/ChatDialog";
 import { NotificationCenter } from "@/components/NotificationCenter";
 import { VolunteerProfile } from "@/components/VolunteerProfile";
 import { RouteMap } from "@/components/RouteMap";
+import QRCodeScanner from "@/components/QRCodeScanner";
+import { useVolunteerLocation } from "@/hooks/useVolunteerLocation";
 
 const VolunteerDashboard = () => {
   const navigate = useNavigate();
@@ -22,10 +24,15 @@ const VolunteerDashboard = () => {
   const [activeTask, setActiveTask] = useState<any>(null);
   const [showProfile, setShowProfile] = useState(false);
   const [volunteerLocation, setVolunteerLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [showPickupScanner, setShowPickupScanner] = useState(false);
+  const [showDeliveryScanner, setShowDeliveryScanner] = useState(false);
   
   const { tasks, refetch: refetchTasks } = useVolunteerTasks(userId);
   const { profile } = useProfile(userId);
   const { checkAndAwardBadge } = useBadges(userId);
+  
+  // Enable real-time location tracking when volunteer has an active task
+  useVolunteerLocation(userId, !!activeTask);
 
   useEffect(() => {
     checkAuth();
@@ -114,7 +121,7 @@ const VolunteerDashboard = () => {
     }
   };
 
-  const handleConfirmPickup = async () => {
+  const handlePickupVerified = async () => {
     if (!activeTask || !userId) return;
 
     try {
@@ -124,6 +131,7 @@ const VolunteerDashboard = () => {
         .update({
           status: "in_progress",
           picked_up_at: new Date().toISOString(),
+          pickup_verified: true,
         })
         .eq("id", activeTask.id);
 
@@ -138,6 +146,7 @@ const VolunteerDashboard = () => {
         related_id: activeTask.id,
       });
 
+      setShowPickupScanner(false);
       toast.success("Pickup confirmed! Navigate to dropoff location.");
       refetchTasks();
     } catch (error: any) {
@@ -145,7 +154,19 @@ const VolunteerDashboard = () => {
     }
   };
 
-  const handleConfirmDelivery = async () => {
+  const handleNavigateToPickup = () => {
+    if (!activeTask) return;
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${activeTask.pickup_latitude},${activeTask.pickup_longitude}&travelmode=driving`;
+    window.open(url, '_blank');
+  };
+
+  const handleNavigateToDropoff = () => {
+    if (!activeTask) return;
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${activeTask.dropoff_latitude},${activeTask.dropoff_longitude}&travelmode=driving`;
+    window.open(url, '_blank');
+  };
+
+  const handleDeliveryVerified = async () => {
     if (!activeTask || !userId) return;
 
     try {
@@ -155,6 +176,7 @@ const VolunteerDashboard = () => {
         .update({
           status: "completed",
           delivered_at: new Date().toISOString(),
+          delivery_verified: true,
         })
         .eq("id", activeTask.id);
 
@@ -182,6 +204,7 @@ const VolunteerDashboard = () => {
       const deliveryCount = (profile?.total_deliveries || 0) + 1;
       await checkAndAwardBadge("volunteer", deliveryCount);
 
+      setShowDeliveryScanner(false);
       toast.success("Delivery completed! Thank you for your service.");
       setActiveTask(null);
       refetchTasks();
@@ -272,7 +295,12 @@ const VolunteerDashboard = () => {
                 </div>
               )}
 
-              <Button variant="default" size="lg" className="w-full">
+              <Button 
+                variant="default" 
+                size="lg" 
+                className="w-full"
+                onClick={handleNavigateToPickup}
+              >
                 <Navigation className="mr-2 h-5 w-5" />
                 Navigate to Pickup
               </Button>
@@ -286,10 +314,10 @@ const VolunteerDashboard = () => {
                     variant="success"
                     size="lg"
                     className="w-full"
-                    onClick={handleConfirmPickup}
+                    onClick={() => setShowPickupScanner(true)}
                   >
                     <CheckCircle className="mr-2 h-5 w-5" />
-                    Confirm Food Collected
+                    Scan QR to Confirm Pickup
                   </Button>
                 </div>
               )}
@@ -326,7 +354,12 @@ const VolunteerDashboard = () => {
                     </div>
                   )}
 
-                  <Button variant="default" size="lg" className="w-full">
+                  <Button 
+                    variant="default" 
+                    size="lg" 
+                    className="w-full"
+                    onClick={handleNavigateToDropoff}
+                  >
                     <Navigation className="mr-2 h-5 w-5" />
                     Navigate to Dropoff
                   </Button>
@@ -339,10 +372,10 @@ const VolunteerDashboard = () => {
                       variant="success"
                       size="lg"
                       className="w-full"
-                      onClick={handleConfirmDelivery}
+                      onClick={() => setShowDeliveryScanner(true)}
                     >
                       <CheckCircle className="mr-2 h-5 w-5" />
-                      Confirm Delivery Complete
+                      Scan QR to Confirm Delivery
                     </Button>
                   </div>
                 </>
@@ -350,6 +383,33 @@ const VolunteerDashboard = () => {
             </CardContent>
           </Card>
         </main>
+
+        {/* QR Code Scanners */}
+        <Dialog open={showPickupScanner} onOpenChange={setShowPickupScanner}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Scan Donor's QR Code</DialogTitle>
+            </DialogHeader>
+            <QRCodeScanner
+              taskId={activeTask.id}
+              action="pickup"
+              onVerified={handlePickupVerified}
+            />
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={showDeliveryScanner} onOpenChange={setShowDeliveryScanner}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Scan NGO's QR Code</DialogTitle>
+            </DialogHeader>
+            <QRCodeScanner
+              taskId={activeTask.id}
+              action="delivery"
+              onVerified={handleDeliveryVerified}
+            />
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }
