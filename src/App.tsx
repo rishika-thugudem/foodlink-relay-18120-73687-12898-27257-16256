@@ -10,6 +10,7 @@ import CreateDonation from "./pages/donor/CreateDonation";
 import NGODashboard from "./pages/ngo/NGODashboard";
 import VolunteerDashboard from "./pages/volunteer/VolunteerDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import SystemDemo from "./pages/SystemDemo";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/ngo/dashboard" element={<NGODashboard />} />
           <Route path="/volunteer/dashboard" element={<VolunteerDashboard />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/demo" element={<SystemDemo />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

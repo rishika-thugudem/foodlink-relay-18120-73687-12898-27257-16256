@@ -1,1 +1,10 @@
 project_id = "rbxidhaztwjruihudcvk"
+
+[functions.ai-ngo-matcher]
+verify_jwt = false
+
+[functions.generate-qr-code]
+verify_jwt = false
+
+[functions.verify-qr-code]
+verify_jwt = false
